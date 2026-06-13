@@ -92,14 +92,23 @@ Answer:"""
 
         log.info(f"Prompt length: {len(prompt)} chars")
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-
-        answer = response.text
-        log.info(f"Answer generated. Length: {len(answer)} chars")
-        return answer
+        import time
+        for attempt in range(3):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
+                answer = response.text
+                log.info(f"Answer generated. Length: {len(answer)} chars")
+                return answer
+            except Exception as retry_err:
+                if "503" in str(retry_err) and attempt < 2:
+                    wait = (attempt + 1) * 3
+                    log.info(f"Gemini busy, retrying in {wait}s...")
+                    time.sleep(wait)
+                else:
+                    raise
 
     except Exception as e:
         log.error(f"Generation failed: {type(e).__name__}: {e}")
