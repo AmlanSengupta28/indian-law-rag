@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pathlib import Path
 import os
 
 app = FastAPI()
@@ -11,6 +14,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static files
+static_dir = Path(__file__).resolve().parent.parent / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
 
 class QueryRequest(BaseModel):
     query: str
@@ -44,11 +52,9 @@ def retrieve_chunks(query_embedding: list, top_k: int = 2) -> list:
 def generate_answer(query: str, chunks: list, api_key: str) -> str:
     from google import genai
     client = genai.Client(api_key=api_key)
-
     context = ""
     for chunk in chunks:
         context += f"\n[S{chunk.get('section_number')}] {chunk['text'][:800]}\n"
-
     prompt = f"""Indian road traffic law assistant.
 Answer only from provided sections. Cite section numbers.
 State fines clearly. Mention DigiLocker if relevant. Under 100 words.
@@ -59,7 +65,6 @@ Sections:
 Question: {query}
 
 Answer:"""
-
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt
@@ -67,19 +72,23 @@ Answer:"""
     return response.text
 
 
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    index_path = static_dir / "index.html"
+    return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+
+
 @app.post("/query")
 async def query_endpoint(request: QueryRequest):
     query = request.query.strip()
     if not query:
-        return {"error": "Query is required"}, 400
+        return {"error": "Query is required"}
     if len(query) > 500:
-        return {"error": "Query too long"}, 400
-
+        return {"error": "Query too long"}
     gemini_key = os.environ.get("GEMINI_API_KEY")
     embedding = embed_query(query, gemini_key)
     chunks = retrieve_chunks(embedding)
     answer = generate_answer(query, chunks, gemini_key)
-
     sources = [
         {"section": c.get("section_number"), "chapter": c.get("chapter")}
         for c in chunks
