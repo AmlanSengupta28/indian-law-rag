@@ -67,7 +67,7 @@ Answer:"""
     return response.text
 
 
-@app.post("/api/query")
+@app.post("/query")
 async def query_endpoint(request: QueryRequest):
     query = request.query.strip()
     if not query:
