@@ -85,6 +85,14 @@ Answer:"""
 def read_root():
     return HTMLResponse(content=get_index_html())
 
+@app.get("/debug")
+def debug():
+    return {
+        "gemini_key_present": bool(os.environ.get("GEMINI_API_KEY")),
+        "supabase_url_present": bool(os.environ.get("SUPABASE_URL")),
+        "supabase_key_present": bool(os.environ.get("SUPABASE_KEY")),
+        "gemini_key_prefix": os.environ.get("GEMINI_API_KEY", "")[:8] + "..."
+    }
 
 @app.post("/query")
 def query_endpoint(request: QueryRequest):
