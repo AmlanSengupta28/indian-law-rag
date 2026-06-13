@@ -16,7 +16,12 @@ app.add_middleware(
 )
 
 ROOT = Path(__file__).resolve().parent.parent
-INDEX_HTML = (ROOT / "index.html").read_text(encoding="utf-8")
+
+def get_index_html() -> str:
+    index_path = ROOT / "index.html"
+    if index_path.exists():
+        return index_path.read_text(encoding="utf-8")
+    return "<html><body><h1>Indian Law RAG API is running</h1><p>Visit /docs</p></body></html>"
 
 GEMINI_EMBED_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent"
 GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
@@ -78,7 +83,7 @@ Answer:"""
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    return HTMLResponse(content=INDEX_HTML)
+    return HTMLResponse(content=get_index_html())
 
 
 @app.post("/query")
