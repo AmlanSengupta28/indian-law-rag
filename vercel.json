@@ -1,6 +1,11 @@
 {
-  "rewrites": [
-    { "source": "/query", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "builds": [
+    { "src": "api/index.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/query", "dest": "api/index.py" },
+    { "src": "/docs", "dest": "api/index.py" },
+    { "src": "/openapi.json", "dest": "api/index.py" },
+    { "src": "/(.*)", "dest": "api/index.py" }
   ]
 }
