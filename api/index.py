@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
@@ -15,9 +14,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files
-static_dir = Path(__file__).resolve().parent.parent / "static"
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# Read index.html relative to project root
+ROOT = Path(__file__).resolve().parent.parent
+INDEX_HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 
 
 class QueryRequest(BaseModel):
@@ -74,8 +73,7 @@ Answer:"""
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    index_path = static_dir / "index.html"
-    return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+    return HTMLResponse(content=INDEX_HTML)
 
 
 @app.post("/query")
