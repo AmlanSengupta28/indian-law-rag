@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import os
+import requests
 
 app = FastAPI()
 
@@ -14,9 +15,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Read index.html relative to project root
 ROOT = Path(__file__).resolve().parent.parent
 INDEX_HTML = (ROOT / "index.html").read_text(encoding="utf-8")
+
+GEMINI_EMBED_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent"
+GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 
 class QueryRequest(BaseModel):
@@ -24,15 +27,16 @@ class QueryRequest(BaseModel):
 
 
 def embed_query(query: str, api_key: str) -> list:
-    from google import genai
-    from google.genai import types
-    client = genai.Client(api_key=api_key)
-    result = client.models.embed_content(
-        model="gemini-embedding-001",
-        contents=query,
-        config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY")
+    response = requests.post(
+        f"{GEMINI_EMBED_URL}?key={api_key}",
+        json={
+            "model": "models/gemini-embedding-001",
+            "content": {"parts": [{"text": query}]},
+            "taskType": "RETRIEVAL_QUERY"
+        }
     )
-    return result.embeddings[0].values
+    response.raise_for_status()
+    return response.json()["embedding"]["values"]
 
 
 def retrieve_chunks(query_embedding: list, top_k: int = 2) -> list:
@@ -49,11 +53,10 @@ def retrieve_chunks(query_embedding: list, top_k: int = 2) -> list:
 
 
 def generate_answer(query: str, chunks: list, api_key: str) -> str:
-    from google import genai
-    client = genai.Client(api_key=api_key)
     context = ""
     for chunk in chunks:
         context += f"\n[S{chunk.get('section_number')}] {chunk['text'][:800]}\n"
+
     prompt = f"""Indian road traffic law assistant.
 Answer only from provided sections. Cite section numbers.
 State fines clearly. Mention DigiLocker if relevant. Under 100 words.
@@ -64,11 +67,13 @@ Sections:
 Question: {query}
 
 Answer:"""
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
+
+    response = requests.post(
+        f"{GEMINI_GENERATE_URL}?key={api_key}",
+        json={"contents": [{"parts": [{"text": prompt}]}]}
     )
-    return response.text
+    response.raise_for_status()
+    return response.json()["candidates"][0]["content"]["parts"][0]["text"]
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -77,16 +82,18 @@ def read_root():
 
 
 @app.post("/query")
-async def query_endpoint(request: QueryRequest):
+def query_endpoint(request: QueryRequest):
     query = request.query.strip()
     if not query:
         return {"error": "Query is required"}
     if len(query) > 500:
         return {"error": "Query too long"}
+
     gemini_key = os.environ.get("GEMINI_API_KEY")
     embedding = embed_query(query, gemini_key)
     chunks = retrieve_chunks(embedding)
     answer = generate_answer(query, chunks, gemini_key)
+
     sources = [
         {"section": c.get("section_number"), "chapter": c.get("chapter")}
         for c in chunks

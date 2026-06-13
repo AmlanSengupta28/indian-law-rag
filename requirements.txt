@@ -1,7 +1,7 @@
-google-genai
 supabase
 python-dotenv
 fastapi
 uvicorn
 python-multipart
 aiofiles
+requests
