@@ -3,172 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Indian Road Law Assistant</title>
+  <title>Kanoon Saathi — Indian Road Law Assistant</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d0f12;
-      --surface: #161920;
-      --border: #232830;
-      --accent: #f97316;
-      --accent-dim: rgba(249,115,22,0.12);
-      --text: #f0f2f5;
-      --text-muted: #8a909c;
-      --success: #22c55e;
-      --radius: 12px;
+      --ink: #1a1c22;
+      --ink-muted: #525868;
+      --ink-faint: #8a92a6;
+      --paper: #f5f7fb;
+      --paper-warm: #edf0f7;
+      --border: #d4d9e8;
+      --border-strong: #b8c0d8;
+      --blue: #1e40af;
+      --blue-mid: #2563eb;
+      --blue-dim: rgba(37,99,235,0.08);
+      --blue-light: #eff3ff;
+      --sage: #1e6b4a;
+      --radius: 6px;
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
     }
 
-    /* Header */
-    header {
-      width: 100%;
-      max-width: 720px;
-      padding: 48px 24px 0;
+    .top-rule {
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 50%, var(--blue) 100%);
     }
 
-    .badge {
-      display: inline-flex;
+    nav {
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-family: 'Syne', sans-serif;
+      justify-content: space-between;
+      background: white;
+    }
+
+    .nav-brand {
+      font-family: 'Lora', serif;
+      font-size: 18px;
       font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-brand span { color: var(--blue-mid); }
+
+    .nav-tag {
+      font-size: 11px;
+      color: var(--ink-faint);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-dim);
-      border: 1px solid rgba(249,115,22,0.25);
-      padding: 4px 10px;
-      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .hero {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 56px 24px 0;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-mid);
       margin-bottom: 20px;
+      padding: 5px 12px;
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: 20px;
+      background: var(--blue-light);
     }
 
     h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 12px;
+      font-family: 'Lora', serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 16px;
     }
 
-    h1 span { color: var(--accent); }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 32px;
+    h1 em {
+      font-style: italic;
+      color: var(--blue-mid);
     }
 
-    /* Example chips */
-    .examples {
+    .hero-sub {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      max-width: 480px;
+      margin: 0 auto 36px;
+    }
+
+    .situations {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 32px;
+      justify-content: center;
+      margin-bottom: 40px;
     }
 
     .chip {
-      font-size: 12px;
-      padding: 6px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      color: var(--ink-muted);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.15s ease;
+      line-height: 1;
     }
 
     .chip:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      background: var(--blue-light);
+      border-color: var(--blue-mid);
+      color: var(--blue-mid);
     }
 
-    /* Input area */
     main {
+      max-width: 680px;
+      margin: 0 auto;
       width: 100%;
-      max-width: 720px;
       padding: 0 24px;
     }
 
-    .input-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    .input-card {
+      background: white;
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: border-color 0.2s;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
-    .input-wrap:focus-within {
-      border-color: var(--accent);
+    .input-label {
+      padding: 14px 18px 0;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
     }
 
     textarea {
+      width: 100%;
       background: transparent;
       border: none;
       outline: none;
       resize: none;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      padding: 10px 18px 14px;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       line-height: 1.6;
-      min-height: 80px;
-      width: 100%;
+      color: var(--ink);
+      min-height: 88px;
     }
 
-    textarea::placeholder { color: var(--text-muted); }
+    textarea::placeholder {
+      color: var(--ink-faint);
+      font-style: italic;
+    }
 
     .input-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--paper-warm);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
-    .input-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .input-hint { font-size: 12px; color: var(--ink-faint); }
 
     button#ask-btn {
-      background: var(--accent);
-      color: #fff;
+      background: var(--blue-mid);
+      color: white;
       border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-family: 'Syne', sans-serif;
+      border-radius: 4px;
+      padding: 9px 20px;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.15s;
+      transition: background 0.15s;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      letter-spacing: 0.02em;
     }
 
-    button#ask-btn:hover { opacity: 0.85; }
-    button#ask-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    button#ask-btn:hover { background: var(--blue); }
+    button#ask-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Spinner */
     .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
+      width: 13px;
+      height: 13px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: white;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       display: none;
@@ -176,140 +223,163 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Answer card */
-    #result {
-      margin-top: 24px;
-      display: none;
-    }
+    #result { margin-top: 24px; display: none; }
 
     .answer-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: white;
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius);
       overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
     .answer-header {
-      padding: 14px 20px;
+      padding: 12px 18px;
       border-bottom: 1px solid var(--border);
+      background: var(--paper-warm);
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--text-muted);
+      gap: 10px;
     }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      background: var(--success);
+    .answer-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--sage);
       border-radius: 50%;
     }
 
+    .answer-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+    }
+
     .answer-body {
-      padding: 20px;
+      padding: 20px 18px;
+      font-family: 'Lora', serif;
       font-size: 15px;
-      line-height: 1.7;
-      color: var(--text);
+      line-height: 1.8;
+      color: var(--ink);
       white-space: pre-wrap;
     }
 
-    .sources {
-      padding: 14px 20px;
+    .sources-row {
+      padding: 12px 18px;
       border-top: 1px solid var(--border);
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
       align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .sources-label {
       font-size: 11px;
-      color: var(--text-muted);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.07em;
+      color: var(--ink-faint);
+      margin-right: 4px;
     }
 
-    .source-tag {
-      font-size: 11px;
-      padding: 3px 10px;
-      background: var(--accent-dim);
-      border: 1px solid rgba(249,115,22,0.2);
-      color: var(--accent);
-      border-radius: 20px;
+    .source-pill {
+      font-size: 12px;
       font-weight: 500;
+      padding: 3px 10px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(37,99,235,0.2);
+      color: var(--blue-mid);
+      border-radius: 20px;
     }
 
-    /* Error */
     .error-card {
-      background: rgba(239,68,68,0.08);
-      border: 1px solid rgba(239,68,68,0.2);
+      background: #fef2f2;
+      border: 1px solid #fecaca;
       border-radius: var(--radius);
-      padding: 16px 20px;
-      color: #f87171;
+      padding: 14px 18px;
+      color: #b91c1c;
       font-size: 14px;
     }
 
-    /* Footer */
-    footer {
-      margin-top: auto;
-      padding: 40px 24px 32px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
+    .disclaimer {
+      max-width: 680px;
+      margin: 24px auto 0;
+      padding: 0 24px;
     }
 
-    footer a { color: var(--accent); text-decoration: none; }
-
-    /* Disclaimer */
-    .disclaimer {
-      margin-top: 16px;
+    .disclaimer-inner {
       padding: 12px 16px;
-      background: rgba(249,115,22,0.05);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
+      border-left: 2px solid var(--border-strong);
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--ink-faint);
       line-height: 1.6;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding: 40px 24px 32px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-brand {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+
+    .footer-sub { font-size: 11px; color: var(--ink-faint); }
+    .footer-sub a { color: var(--blue-mid); text-decoration: none; }
+
+    @media (max-width: 480px) {
+      nav { padding: 14px 16px; }
+      .hero { padding: 36px 16px 0; }
+      main { padding: 0 16px; }
+      .disclaimer { padding: 0 16px; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="badge">⚖️ Motor Vehicles Act 1988</div>
-    <h1>Indian Road Law <span>Assistant</span></h1>
-    <p class="subtitle">
-      Describe your traffic situation in plain English. Get the relevant law, fine, and your rights — instantly.
-    </p>
+  <div class="top-rule"></div>
 
-    <div class="examples">
-      <div class="chip" onclick="fillQuery(this)">Forgot license at home</div>
-      <div class="chip" onclick="fillQuery(this)">Drunk driving penalty</div>
-      <div class="chip" onclick="fillQuery(this)">No helmet fine</div>
-      <div class="chip" onclick="fillQuery(this)">Driving without insurance</div>
-      <div class="chip" onclick="fillQuery(this)">Jumped red light</div>
-      <div class="chip" onclick="fillQuery(this)">Overspeeding on highway</div>
+  <nav>
+    <div class="nav-brand">Kanoon <span>Saathi</span></div>
+    <div class="nav-tag">Motor Vehicles Act 1988</div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow">Know your rights on the road</div>
+    <h1>Got stopped by traffic police?<br><em>Find out where you stand.</em></h1>
+    <p class="hero-sub">Describe your situation in plain words. Get the relevant section of law, the fine, and what the officer can or cannot do.</p>
+
+    <div class="situations">
+      <div class="chip" onclick="fillQuery('Caught without helmet while riding')">Caught without helmet</div>
+      <div class="chip" onclick="fillQuery('Left my driving licence at home, stopped at a checkpoint')">Licence left at home</div>
+      <div class="chip" onclick="fillQuery('My vehicle insurance expired last week')">Expired insurance</div>
+      <div class="chip" onclick="fillQuery('Ran a red light and was caught on camera')">Jumped red light</div>
+      <div class="chip" onclick="fillQuery('Pulled over for using mobile phone while driving')">Phone while driving</div>
+      <div class="chip" onclick="fillQuery('My vehicle RC has expired, stopped by police')">Expired RC</div>
     </div>
-  </header>
+  </div>
 
   <main>
-    <div class="input-wrap">
+    <div class="input-card">
+      <div class="input-label">Describe your situation</div>
       <textarea
         id="query"
-        placeholder="e.g. I forgot my driving license at home and a police officer stopped me. What is the fine and what are my rights?"
+        placeholder="e.g. I was riding my bike without a helmet and a traffic officer stopped me near the signal. What is the fine and can he seize my vehicle?"
         rows="3"
       ></textarea>
       <div class="input-footer">
-        <span class="input-hint">Powered by Motor Vehicles Act 1988 + 2019 Amendment</span>
+        <span class="input-hint">Press Ctrl+Enter to submit</span>
         <button id="ask-btn" onclick="askQuestion()">
           <div class="spinner" id="spinner"></div>
-          <span id="btn-text">Ask</span>
+          <span id="btn-text">Look up the law</span>
         </button>
       </div>
     </div>
@@ -317,25 +387,28 @@
     <div id="result"></div>
 
     <div class="disclaimer">
-      This tool provides general information only. For legal advice, consult a qualified advocate. Laws may vary by state.
+      <div class="disclaimer-inner">
+        This tool provides general legal information from the Motor Vehicles Act 1988. It is not a substitute for legal advice. Laws may vary by state and are subject to change.
+      </div>
     </div>
   </main>
 
   <footer>
-    Built with Gemini + Supabase pgvector · <a href="#">Source on GitHub</a>
+    <div class="footer-brand">Kanoon Saathi</div>
+    <div class="footer-sub">Powered by Gemini · Supabase pgvector · <a href="https://github.com/AmlanSengupta28/indian-law-rag">GitHub</a></div>
   </footer>
 
   <script>
-    function fillQuery(el) {
-      document.getElementById('query').value = el.textContent;
-      document.getElementById('query').focus();
+    function fillQuery(text) {
+      const ta = document.getElementById('query');
+      ta.value = text;
+      ta.focus();
     }
 
     async function askQuestion() {
       const query = document.getElementById('query').value.trim();
       if (!query) return;
 
-      // Loading state
       const btn = document.getElementById('ask-btn');
       const spinner = document.getElementById('spinner');
       const btnText = document.getElementById('btn-text');
@@ -343,7 +416,7 @@
 
       btn.disabled = true;
       spinner.style.display = 'block';
-      btnText.textContent = 'Searching...';
+      btnText.textContent = 'Looking up…';
       resultDiv.style.display = 'none';
 
       try {
@@ -355,62 +428,57 @@
 
         const data = await response.json();
 
-        if (!response.ok) {
-          showError(data.error || 'Something went wrong');
+        if (!response.ok || data.error) {
+          showError(data.error || 'Something went wrong. Please try again.');
           return;
         }
 
         showAnswer(data.answer, data.sources);
 
       } catch (err) {
-        showError('Could not reach the server. Please try again.');
+        showError('Could not reach the server. Please check your connection and try again.');
       } finally {
         btn.disabled = false;
         spinner.style.display = 'none';
-        btnText.textContent = 'Ask';
+        btnText.textContent = 'Look up the law';
       }
     }
 
     function showAnswer(answer, sources) {
       const resultDiv = document.getElementById('result');
-
-      const sourceTags = sources
+      const sourcePills = (sources || [])
         .filter(s => s.section)
-        .map(s => `<span class="source-tag">Section ${s.section}</span>`)
+        .map(s => `<span class="source-pill">Section ${s.section}</span>`)
         .join('');
 
       resultDiv.innerHTML = `
         <div class="answer-card">
           <div class="answer-header">
-            <div class="dot"></div>
-            Answer from MV Act
+            <div class="answer-indicator"></div>
+            <span class="answer-label">From the Motor Vehicles Act</span>
           </div>
           <div class="answer-body">${escapeHtml(answer)}</div>
-          ${sourceTags ? `
-          <div class="sources">
-            <span class="sources-label">Sources</span>
-            ${sourceTags}
-          </div>` : ''}
+          ${sourcePills ? `<div class="sources-row"><span class="sources-label">Sections cited</span>${sourcePills}</div>` : ''}
         </div>
       `;
+
       resultDiv.style.display = 'block';
       resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function showError(message) {
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = `<div class="error-card">⚠️ ${escapeHtml(message)}</div>`;
+      resultDiv.innerHTML = `<div class="error-card">⚠ ${escapeHtml(message)}</div>`;
       resultDiv.style.display = 'block';
     }
 
     function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.appendChild(document.createTextNode(text));
-      return div.innerHTML;
+      const d = document.createElement('div');
+      d.appendChild(document.createTextNode(text));
+      return d.innerHTML;
     }
 
-    // Enter key to submit
-    document.getElementById('query').addEventListener('keydown', (e) => {
+    document.getElementById('query').addEventListener('keydown', e => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) askQuestion();
     });
   </script>
