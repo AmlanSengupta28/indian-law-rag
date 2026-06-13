@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indian Road Law Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f12;
+      --surface: #161920;
+      --border: #232830;
+      --accent: #f97316;
+      --accent-dim: rgba(249,115,22,0.12);
+      --text: #f0f2f5;
+      --text-muted: #8a909c;
+      --success: #22c55e;
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      max-width: 720px;
+      padding: 48px 24px 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(249,115,22,0.25);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    /* Example chips */
+    .examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Input area */
+    main {
+      width: 100%;
+      max-width: 720px;
+      padding: 0 24px;
+    }
+
+    .input-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 80px;
+      width: 100%;
+    }
+
+    textarea::placeholder { color: var(--text-muted); }
+
+    .input-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    button#ask-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button#ask-btn:hover { opacity: 0.85; }
+    button#ask-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Spinner */
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Answer card */
+    #result {
+      margin-top: 24px;
+      display: none;
+    }
+
+    .answer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .answer-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+    }
+
+    .answer-body {
+      padding: 20px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .sources {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sources-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .source-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(249,115,22,0.2);
+      color: var(--accent);
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* Error */
+    .error-card {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      color: #f87171;
+      font-size: 14px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding: 40px 24px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(249,115,22,0.05);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">⚖️ Motor Vehicles Act 1988</div>
+    <h1>Indian Road Law <span>Assistant</span></h1>
+    <p class="subtitle">
+      Describe your traffic situation in plain English. Get the relevant law, fine, and your rights — instantly.
+    </p>
+
+    <div class="examples">
+      <div class="chip" onclick="fillQuery(this)">Forgot license at home</div>
+      <div class="chip" onclick="fillQuery(this)">Drunk driving penalty</div>
+      <div class="chip" onclick="fillQuery(this)">No helmet fine</div>
+      <div class="chip" onclick="fillQuery(this)">Driving without insurance</div>
+      <div class="chip" onclick="fillQuery(this)">Jumped red light</div>
+      <div class="chip" onclick="fillQuery(this)">Overspeeding on highway</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="input-wrap">
+      <textarea
+        id="query"
+        placeholder="e.g. I forgot my driving license at home and a police officer stopped me. What is the fine and what are my rights?"
+        rows="3"
+      ></textarea>
+      <div class="input-footer">
+        <span class="input-hint">Powered by Motor Vehicles Act 1988 + 2019 Amendment</span>
+        <button id="ask-btn" onclick="askQuestion()">
+          <div class="spinner" id="spinner"></div>
+          <span id="btn-text">Ask</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="disclaimer">
+      This tool provides general information only. For legal advice, consult a qualified advocate. Laws may vary by state.
+    </div>
+  </main>
+
+  <footer>
+    Built with Gemini + Supabase pgvector · <a href="#">Source on GitHub</a>
+  </footer>
+
+  <script>
+    function fillQuery(el) {
+      document.getElementById('query').value = el.textContent;
+      document.getElementById('query').focus();
+    }
+
+    async function askQuestion() {
+      const query = document.getElementById('query').value.trim();
+      if (!query) return;
+
+      // Loading state
+      const btn = document.getElementById('ask-btn');
+      const spinner = document.getElementById('spinner');
+      const btnText = document.getElementById('btn-text');
+      const resultDiv = document.getElementById('result');
+
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      btnText.textContent = 'Searching...';
+      resultDiv.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          showError(data.error || 'Something went wrong');
+          return;
+        }
+
+        showAnswer(data.answer, data.sources);
+
+      } catch (err) {
+        showError('Could not reach the server. Please try again.');
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = 'Ask';
+      }
+    }
+
+    function showAnswer(answer, sources) {
+      const resultDiv = document.getElementById('result');
+
+      const sourceTags = sources
+        .filter(s => s.section)
+        .map(s => `<span class="source-tag">Section ${s.section}</span>`)
+        .join('');
+
+      resultDiv.innerHTML = `
+        <div class="answer-card">
+          <div class="answer-header">
+            <div class="dot"></div>
+            Answer from MV Act
+          </div>
+          <div class="answer-body">${escapeHtml(answer)}</div>
+          ${sourceTags ? `
+          <div class="sources">
+            <span class="sources-label">Sources</span>
+            ${sourceTags}
+          </div>` : ''}
+        </div>
+      `;
+      resultDiv.style.display = 'block';
+      resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showError(message) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `<div class="error-card">⚠️ ${escapeHtml(message)}</div>`;
+      resultDiv.style.display = 'block';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.appendChild(document.createTextNode(text));
+      return div.innerHTML;
+    }
+
+    // Enter key to submit
+    document.getElementById('query').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) askQuestion();
+    });
+  </script>
+
+</body>
+</html>
