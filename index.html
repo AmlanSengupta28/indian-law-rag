@@ -447,6 +447,10 @@
 
     function showAnswer(answer, sources) {
       const resultDiv = document.getElementById('result');
+      // Parse sources if it came back as a string (from cache)
+      if (typeof sources === 'string') {
+        try { sources = JSON.parse(sources); } catch(e) { sources = []; }
+      }
       const sourcePills = (sources || [])
         .filter(s => s.section)
         .map(s => `<span class="source-pill">Section ${s.section}</span>`)
