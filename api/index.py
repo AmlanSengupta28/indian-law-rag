@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
@@ -190,6 +190,10 @@ def query_endpoint(request: QueryRequest):
 
     return {"answer": answer, "sources": sources, "cached": False}
 
+@app.get("/og-image.png")
+def og_image():
+    img_path = ROOT / "og-image.png"
+    return FileResponse(img_path, media_type="image/png")
 
 @app.get("/debug")
 def debug():
