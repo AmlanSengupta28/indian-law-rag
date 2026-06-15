@@ -42,7 +42,6 @@ def get_supabase():
 
 
 def make_hash(query: str) -> str:
-    """Normalize and hash the query for cache lookup."""
     normalized = query.strip().lower()
     return hashlib.md5(normalized.encode()).hexdigest()
 

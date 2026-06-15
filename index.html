@@ -435,6 +435,8 @@
         showAnswer(data.answer, data.sources);
 
       } catch (err) {
+        console.error('Fetch error:', err);
+        console.error('Error details:', err.message);
         showError('Could not reach the server. Please check your connection and try again.');
       } finally {
         btn.disabled = false;
